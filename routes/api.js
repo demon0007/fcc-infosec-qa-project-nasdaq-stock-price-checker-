@@ -10,8 +10,11 @@
 
 var expect = require('chai').expect;
 var MongoClient = require('mongodb');
+let api = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&apikey=F3ZMNRM2OERUXPX&symbol='
+let db
 
-const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
+const CONNECTION_STRING = process.env.DB; 
+MongoClient.connect(CONNECTION_STRING, function(err, dba) { db = dba});
 
 module.exports = function (app) {
 
@@ -21,3 +24,5 @@ module.exports = function (app) {
     });
     
 };
+
+let search(key) 
