@@ -10,6 +10,7 @@
 
 var expect = require('chai').expect;
 var MongoClient = require('mongodb');
+let request = require('ajax-request')
 let api = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&apikey=F3ZMNRM2OERUXPX&symbol='
 let db
 
@@ -20,32 +21,24 @@ module.exports = function (app) {
 
   app.route('/api/stock-prices')
     .get(function (req, res){
-      search('dev1')
-      res.send('Work in Progress')
+      search('dev2', res)
+      // res.send('Work in Progress')
     });
     
 };
 
-let search = key => {
+let search = (key, res) => {
   key = key.toUpperCase()
   db.collection('stock').findOne({'stock': key}, (err, doc) => {
     if (doc == null) {
-      
-      db.collection('stock').insertOne({'stock': key}, (err, doc) => {
-        return doc.ops[0]
-      })
+      loadDoc(key, res)
+    } else {
+      res.json({stockData: doc})
     }
   })
   
 }
 
-function loadDoc(key) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            
-       }
-    };
-    xhttp.open("GET", api+key, true);
-    xhttp.send();
+function loadDoc(key, res) {
+    
 }
