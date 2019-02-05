@@ -21,7 +21,7 @@ module.exports = function (app) {
 
   app.route('/api/stock-prices')
     .get(function (req, res){
-      search('dev2', res)
+      search('msft', res)
       // res.send('Work in Progress')
     });
     
@@ -39,6 +39,16 @@ let search = (key, res) => {
   
 }
 
-function loadDoc(key, res) {
-    
+function loadDoc(key, resp) {
+    request({
+      url: api+key,
+      method: 'GET',
+      // data: {
+      //   query1: 'value1'
+      // }
+    }, function(err, res, body) {
+        console.log(res)
+        // console.log(body)
+        resp.send('Log')
+    });
 }
