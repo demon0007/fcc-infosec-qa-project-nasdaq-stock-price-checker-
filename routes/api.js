@@ -23,7 +23,7 @@ module.exports = function (app) {
   
     .get(function (req, res){
     
-      console.log(req.ip)
+      console.log(req.headers['x-forwarded-for'].split(',')[0])
       let stockData = {}
       
       if (Array.isArray(req.query.stock)) {
@@ -71,7 +71,7 @@ module.exports = function (app) {
         })
         // console.log(stockArray)
         
-      } else {
+      } else if (req.query.hasOwnProperty('stock')) {
           request({
             url: api+req.query.stock,
             json: true
@@ -99,6 +99,8 @@ module.exports = function (app) {
                   )
             }
         })
+      } else {
+        res.send('No Query Found')
       }
     });
     
