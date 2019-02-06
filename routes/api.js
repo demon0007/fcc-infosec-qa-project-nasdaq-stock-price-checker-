@@ -48,7 +48,7 @@ module.exports = function (app) {
                         console.log(match)
                       }
                     )
-                    update = {$set: {price: stock.price}, $inc: {like: +1}}
+                    update = {$set: {price: stock.price}, $inc: {like: +1}, $push: {likeIP: req.headers['x-forwarded-for'].split(',')[0]}}
                   } else {
                     update = {$set: {price: stock.price}, $setOnInsert: {like: 0}}
                   }
@@ -87,7 +87,17 @@ module.exports = function (app) {
                 let stock = { stock: req.query.stock, price: body['Global Quote']['05. price'], like: 1}
                 let update
                 if ( req.query.hasOwnProperty('like') && req.query.like ) {
-                  update = {$set: {price: stock.price}, $inc: {like: +1}}
+                  db.collection('stock').findOne(
+                      {stock: stock.stock,
+                       likeIP: req.headers['x-forwarded-for'].split(',')[0]},
+                      (err, match) => {
+                        if (match === null) {
+                          update = {$set: {price: stock.price}, $inc: {like: +1}, $push: {likeIP: req.headers['x-forwarded-for'].split(',')[0]}}
+                        } else {
+                          update = {$set: {price: stock.price}, $inc: {like: +1}, $push: {likeIP: req.headers['x-forwarded-for'].split(',')[0]}}
+                        }
+                      }
+                    )
                 } else {
                   update = {$set: {price: stock.price}, $setOnInsert: {like: 0}}
                 }
