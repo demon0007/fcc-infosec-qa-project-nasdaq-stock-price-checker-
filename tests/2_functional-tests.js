@@ -24,7 +24,7 @@ suite('Functional Tests', function() {
         .get('/api/stock-prices')
         .query({stock: testStock.stock})
         .end(function(err, res){
-          console.log(res)
+          // console.log(res)
           assert.equal(res.status, 200)
           assert.equal(res.body.stockData.stock, testStock.stock)
           

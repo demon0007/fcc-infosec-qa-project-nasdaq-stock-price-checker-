@@ -23,7 +23,7 @@ module.exports = function (app) {
   
     .get(function (req, res){
     
-      console.log(req.headers['x-forwarded-for'].split(',')[0])
+      console.log(req.headers['x-forwarded-for'])
       let stockData = {}
       
       if (Array.isArray(req.query.stock)) {
@@ -38,6 +38,7 @@ module.exports = function (app) {
               json: true
           }, function (error, response, body) {
               if (!error && response.statusCode === 200) {
+                  console.log(body)
                   let stock = { stock: stock_name, price: body['Global Quote']['05. price'], like: 1}
                   let update
                   if ( req.query.hasOwnProperty('like') && req.query.like ) {
