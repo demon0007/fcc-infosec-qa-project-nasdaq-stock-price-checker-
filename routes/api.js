@@ -41,14 +41,18 @@ module.exports = function (app) {
                   let stock = { stock: stock_name, price: body['Global Quote']['05. price'], like: 1}
                   let update
                   if ( req.query.hasOwnProperty('like') && req.query.like ) {
-                    db.collection('stock').find(
+                    db.collection('stock').findOne(
                       {stock: stock.stock,
                        likeIP: req.headers['x-forwarded-for'].split(',')[0]},
                       (err, match) => {
-                        console.log(match)
+                        if (err) console.log(err)
+                        if (match === null) {
+                          update = {$set: {price: stock.price}, $inc: {like: +1}, $push: {likeIP: req.headers['x-forwarded-for'].split(',')[0]}}
+                        } else {
+                          update = {$set: {price: stock.price}}
+                        }
                       }
                     )
-                    update = {$set: {price: stock.price}, $inc: {like: +1}, $push: {likeIP: req.headers['x-forwarded-for'].split(',')[0]}}
                   } else {
                     update = {$set: {price: stock.price}, $setOnInsert: {like: 0}}
                   }
@@ -91,29 +95,18 @@ module.exports = function (app) {
                       {stock: stock.stock,
                        likeIP: req.headers['x-forwarded-for'].split(',')[0]},
                       (err, match) => {
+                        if (err) console.log(err)
                         if (match === null) {
                           update = {$set: {price: stock.price}, $inc: {like: +1}, $push: {likeIP: req.headers['x-forwarded-for'].split(',')[0]}}
                         } else {
-                          update = {$set: {price: stock.price}, $inc: {like: +1}, $push: {likeIP: req.headers['x-forwarded-for'].split(',')[0]}}
+                          update = {$set: {price: stock.price}}
                         }
                       }
                     )
                 } else {
                   update = {$set: {price: stock.price}, $setOnInsert: {like: 0}}
+                  
                 }
-                db.collection('stock').findOneAndUpdate(
-                    {'stock': stock.stock},
-                    update,
-                    {upsert: true, returnOriginal: false},
-                    (err, doc) => {
-                      if (err) {
-                        console.log(err)
-                        res.send('error')
-                      } else {
-                        res.json({stockData: {stock: doc.value.stock, price: doc.value.price, like: doc.value.like}})
-                      }
-                    }
-                  )
             }
         })
       } else {
@@ -123,3 +116,4 @@ module.exports = function (app) {
     
 };
 
+let 
