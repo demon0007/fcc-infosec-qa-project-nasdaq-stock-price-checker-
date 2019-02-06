@@ -33,22 +33,24 @@ module.exports = function (app) {
             json: true
         }, function (error, response, body) {
             if (!error && response.statusCode === 200) {
-                let stock = { stock: req.query.stock, price: body['05. price'], like: 0}
+                let stock = { stock: req.query.stock, price: body['Global Quote']['05. price'], like: 1}
                 if ( req.query.hasOwnProperty('like') && req.query.like ) {
-                  console.log(bodu)
+                  // console.log(body)
+                  // console.log(body['Global Quote']['05. price'])
                   db.collection('stock').findOneAndUpdate(
                     {'stock': stock.stock},
                     {$set: {price: stock.price}, $inc: {like: +1}},
-                    {upsert: true, new: true, setDefaultOnInsert: true},
+                    {upsert: true},
                     (err, doc) => {
                       if (err) {
                         console.log(err)
                         res.send('error')
                       } else {
-                      res.json(doc)
+                      res.json({stockData: stock})
                       }
                     }
                   )
+                } else {
                 }
             }
         })
