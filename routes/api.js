@@ -31,13 +31,13 @@ module.exports = function (app) {
           res.send('Too many stock names in the query')
           return
         }
-        req.query.stock.forEach(stock => {
+        req.query.stock.forEach((stock_name, i) => {
           request({
-              url: api+stock,
+              url: api+stock_name,
               json: true
           }, function (error, response, body) {
               if (!error && response.statusCode === 200) {
-                  let stock = { stock: stock, price: body['Global Quote']['05. price'], like: 1}
+                  let stock = { stock: stock_name, price: body['Global Quote']['05. price'], like: 1}
                   let update
                   if ( req.query.hasOwnProperty('like') && req.query.like ) {
                     update = {$set: {price: stock.price}, $inc: {like: +1}}
@@ -54,16 +54,21 @@ module.exports = function (app) {
                           res.send('error')
                         } else {
                           stockArray.push({stock: doc.value.stock, price: doc.value.price, rel_likes: doc.value.like})
+                          if (i == 1) {
+                            console.log(stockArray)
+                            let rel_likes = (stockArray[0].rel_likes - stockArray[1].rel_likes)
+                            rel_likes = (rel_likes<0)?rel_likes*-1:rel_likes
+                            stockArray[0].rel_likes = rel_likes
+                            stockArray[1].rel_likes = rel_likes
+                            res.json({stockData: stockArray})
+                          }
                         }
                       }
                     )
               }
           })
         })
-        let rel_likes = (stockArray[0].rel_likes - stockArray[1].rel_likes)
-        rel_likes = (rel_likes<0)?rel_likes*-1:rel_likes
-        stockArray[0].rel_likes = rel_likes
-        stockArray[1].rel_likes = rel_likes
+        // console.log(stockArray)
         
       } else {
           request({
