@@ -41,6 +41,13 @@ module.exports = function (app) {
                   let stock = { stock: stock_name, price: body['Global Quote']['05. price'], like: 1}
                   let update
                   if ( req.query.hasOwnProperty('like') && req.query.like ) {
+                    db.collection('stock').find(
+                      {stock: stock.stock,
+                       likeIP: req.headers['x-forwarded-for'].split(',')[0]},
+                      (err, match) => {
+                        console.log(match)
+                      }
+                    )
                     update = {$set: {price: stock.price}, $inc: {like: +1}}
                   } else {
                     update = {$set: {price: stock.price}, $setOnInsert: {like: 0}}
