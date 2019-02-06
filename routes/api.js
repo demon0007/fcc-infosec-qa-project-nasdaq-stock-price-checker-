@@ -34,24 +34,25 @@ module.exports = function (app) {
         }, function (error, response, body) {
             if (!error && response.statusCode === 200) {
                 let stock = { stock: req.query.stock, price: body['Global Quote']['05. price'], like: 1}
+                let update
                 if ( req.query.hasOwnProperty('like') && req.query.like ) {
-                  // console.log(body)
-                  // console.log(body['Global Quote']['05. price'])
-                  db.collection('stock').findOneAndUpdate(
+                  update = {$set: {price: stock.price}, $inc: {like: +1}}
+                } else if () {
+                  update = {$set: {price: stock.price}, $setOnInsert: {like: }}
+                }
+                db.collection('stock').findOneAndUpdate(
                     {'stock': stock.stock},
-                    {$set: {price: stock.price}, $inc: {like: +1}},
-                    {upsert: true},
+                    update,
+                    {upsert: true, returnOriginal: false},
                     (err, doc) => {
                       if (err) {
                         console.log(err)
                         res.send('error')
                       } else {
-                      res.json({stockData: stock})
+                        res.json({stockData: doc.value})
                       }
                     }
                   )
-                } else {
-                }
             }
         })
       }
