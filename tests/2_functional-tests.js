@@ -26,29 +26,75 @@ suite('Functional Tests', function() {
         .end(function(err, res){
          
           assert.equal(res.status, 200)
-          assert.equal(res.body.stock, test.stock)
+          assert.equal(res.body.stockData.stock, test.stock)
           
-          test.price = res.body.price
-          test
+          test.price = res.body.stockData.price
+          test.like = res.body.stockData.like
          
           done();
         });
       });
       
       test('1 stock with like', function(done) {
-        
+        chai.request(server)
+        .get('/api/stock-prices')
+        .query({stock: test.stock})
+        .end(function(err, res){
+         
+          assert.equal(res.status, 200)
+          assert.equal(res.body.stockData.stock, test.stock)
+          assert.equal(res.body.stockData.like, test.like+1)
+          test.like = res.body.stockData.like
+         
+          done();
+        });
       });
       
       test('1 stock with like again (ensure likes arent double counted)', function(done) {
-        
+        chai.request(server)
+        .get('/api/stock-prices')
+        .query({stock: test.stock})
+        .end(function(err, res){
+         
+          assert.equal(res.status, 200)
+          assert.equal(res.body.stockData.stock, test.stock)
+          assert.equal(res.body.stockData.like, test.like)
+          test.like = res.body.stockData.like
+         
+          done();
+        });
       });
       
       test('2 stocks', function(done) {
-        
+        chai.request(server)
+        .get('/api/stock-prices')
+        .query({stock: [test.stock, 'msft']})
+        .end(function(err, res){
+         
+          assert.equal(res.status, 200)
+          assert.isArray(res.body.stockData)
+          assert.property(res.body.stockData[0], 'stock')
+          assert.property(res.body.stockData[1], 'stock')
+         
+          done();
+        });
       });
       
       test('2 stocks with like', function(done) {
-        
+        chai.request(server)
+        .get('/api/stock-prices')
+        .query({stock: [test.stock, 'msft'], like:true})
+        .end(function(err, res){
+         
+          assert.equal(res.status, 200)
+          assert.isArray(res.body.stockData)
+          assert.property(res.body.stockData[0], 'stock')
+          assert.property(res.body.stockData[1], 'stock')
+          assert.property(res.body.stockData[0], 'rel_likes')
+          assert.property(res.body.stockData[1], 'rel_likes')
+          
+          done();
+        });
       });
       
     });
