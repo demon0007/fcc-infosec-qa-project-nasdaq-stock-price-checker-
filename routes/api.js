@@ -35,10 +35,11 @@ module.exports = function (app) {
             if (!error && response.statusCode === 200) {
                 let stock = { stock: req.query.stock, price: body['05. price'], like: 0}
                 if ( req.query.hasOwnProperty('like') && req.query.like ) {
+                  console.log(bodu)
                   db.collection('stock').findOneAndUpdate(
                     {'stock': stock.stock},
                     {$set: {price: stock.price}, $inc: {like: +1}},
-                    {upsert: true},
+                    {upsert: true, new: true, setDefaultOnInsert: true},
                     (err, doc) => {
                       if (err) {
                         console.log(err)
