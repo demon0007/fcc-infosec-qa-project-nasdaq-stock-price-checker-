@@ -13,6 +13,8 @@ var server = require('../server');
 
 chai.use(chaiHttp);
 
+let test = {stock: 'goog'}
+
 suite('Functional Tests', function() {
     
     suite('GET /api/stock-prices => stockData object', function() {
@@ -20,11 +22,15 @@ suite('Functional Tests', function() {
       test('1 stock', function(done) {
        chai.request(server)
         .get('/api/stock-prices')
-        .query({stock: 'goog'})
+        .query({stock: test.stock})
         .end(function(err, res){
+         
+          assert.equal(res.status, 200)
+          assert.equal(res.body.stock, test.stock)
           
-          assert.equal()
-          
+          test.price = res.body.price
+          test
+         
           done();
         });
       });

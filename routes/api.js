@@ -48,35 +48,17 @@ module.exports = function (app) {
                         if (err) console.log(err)
                         if (match === null) {
                           update = {$set: {price: stock.price}, $inc: {like: +1}, $push: {likeIP: req.headers['x-forwarded-for'].split(',')[0]}}
+                          updateDBA(update, stock, res, stockArray) 
                         } else {
                           update = {$set: {price: stock.price}}
+                          updateDBA(update, stock, res, stockArray) 
                         }
                       }
                     )
                   } else {
                     update = {$set: {price: stock.price}, $setOnInsert: {like: 0}}
+                    updateDBA(update, stock, res, stockArray)
                   }
-                  db.collection('stock').findOneAndUpdate(
-                      {'stock': stock.stock},
-                      update,
-                      {upsert: true, returnOriginal: false},
-                      (err, doc) => {
-                        if (err) {
-                          console.log(err)
-                          res.send('error')
-                        } else {
-                          stockArray.push({stock: doc.value.stock, price: doc.value.price, rel_likes: doc.value.like})
-                          if (stockArray.length == 2) {
-                            console.log(stockArray)
-                            let rel_likes = (stockArray[0].rel_likes - stockArray[1].rel_likes)
-                            rel_likes = (rel_likes<0)?rel_likes*-1:rel_likes
-                            stockArray[0].rel_likes = rel_likes
-                            stockArray[1].rel_likes = rel_likes
-                            res.json({stockData: stockArray})
-                          }
-                        }
-                      }
-                    )
               }
           })
         })
@@ -101,11 +83,12 @@ module.exports = function (app) {
                         } else {
                           update = {$set: {price: stock.price}}
                         }
+                        updateDB(update, stock, res)
                       }
                     )
                 } else {
                   update = {$set: {price: stock.price}, $setOnInsert: {like: 0}}
-                  
+                  updateDB(update, stock, res)
                 }
             }
         })
@@ -116,4 +99,42 @@ module.exports = function (app) {
     
 };
 
-let 
+let updateDB = (update, stock, res) => {
+  db.collection('stock').findOneAndUpdate(
+                    {'stock': stock.stock},
+                    update,
+                    {upsert: true, returnOriginal: false},
+                    (err, doc) => {
+                      if (err) {
+                        console.log(err)
+                        res.send('error')
+                      } else {
+                        res.json({stockData: {stock: doc.value.stock, price: doc.value.price, like: doc.value.like}})
+                      }
+                    }
+                  )
+}
+
+let updateDBA = (update, stock, res, stockArray) => {
+  db.collection('stock').findOneAndUpdate(
+    {'stock': stock.stock},
+    update,
+    {upsert: true, returnOriginal: false},
+    (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send('error')
+      } else {
+        stockArray.push({stock: doc.value.stock, price: doc.value.price, rel_likes: doc.value.like})
+        if (stockArray.length == 2) {
+          console.log(stockArray)
+          let rel_likes = (stockArray[0].rel_likes - stockArray[1].rel_likes)
+          rel_likes = (rel_likes<0)?rel_likes*-1:rel_likes
+          stockArray[0].rel_likes = rel_likes
+          stockArray[1].rel_likes = rel_likes
+          res.json({stockData: stockArray})
+        }
+      }
+    }
+  )
+}
