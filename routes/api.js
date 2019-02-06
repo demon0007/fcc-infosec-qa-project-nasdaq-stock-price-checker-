@@ -54,7 +54,7 @@ module.exports = function (app) {
                           res.send('error')
                         } else {
                           stockArray.push({stock: doc.value.stock, price: doc.value.price, rel_likes: doc.value.like})
-                          if (i == 1) {
+                          if (stockArray.length == 2) {
                             console.log(stockArray)
                             let rel_likes = (stockArray[0].rel_likes - stockArray[1].rel_likes)
                             rel_likes = (rel_likes<0)?rel_likes*-1:rel_likes
