@@ -19,46 +19,26 @@ MongoClient.connect(CONNECTION_STRING, function(err, dba) { db = dba});
 
 module.exports = function (app) {
   
-  request({
-        url: api+'msft',
-        json: true
-    }, function (error, response, body) {
-
-        if (!error && response.statusCode === 200) {
-            console.log(body) // Print the json response
-        }
-    })
-  
   app.route('/api/stock-prices')
+  
     .get(function (req, res){
-      search('msft', res)
+      
+    let stockData = {}
+      
+      if (Array.isArray(req.query.stock)) {
+        
+      } else {
+          request({
+            url: api+req.query.stock,
+            json: true
+        }, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+                let stock = { stock: er}
+            }
+        })
+      }
       // res.send('Work in Progress')
     });
     
 };
 
-let search = (key, res) => {
-  key = key.toUpperCase()
-  db.collection('stock').findOne({'stock': key}, (err, doc) => {
-    if (doc == null) {
-      loadDoc(key, res)
-    } else {
-      res.json({stockData: doc})
-    }
-  })
-  
-}
-
-function loadDoc(key, resp) {
-    request({
-      url: api+key,
-      method: 'GET',
-      // data: {
-      //   query1: 'value1'
-      // }
-    }, function(err, res, body) {
-        console.log(res)
-        // console.log(body)
-        resp.send('Log')
-    });
-}

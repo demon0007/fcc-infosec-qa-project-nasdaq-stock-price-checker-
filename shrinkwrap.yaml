@@ -1,5 +1,4 @@
 dependencies:
-  ajax-request: 1.2.3
   body-parser: 1.18.3
   chai: 3.5.0
   chai-http: 3.0.0
@@ -36,13 +35,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha1-q259nYhqrKiwhbwzEreaGYQz8Oc=
-  /ajax-request/1.2.3:
-    dependencies:
-      file-system: 2.2.2
-      utils-extend: 1.0.8
-    dev: false
-    resolution:
-      integrity: sha1-mfy+wdbSeS+F+pSVNTMr0U9fN5A=
   /ajv/6.8.1:
     dependencies:
       fast-deep-equal: 2.0.1
@@ -482,19 +474,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-2hGrlv6efG4hscYVZeaYjpzpT6I2OZgYqE2yDUzeAcKj2D1SH0AsEzqJNXzdoglEddcIXQQYop3lD97XpG75Jw==
-  /file-match/1.0.2:
-    dependencies:
-      utils-extend: 1.0.8
-    dev: false
-    resolution:
-      integrity: sha1-ycrSZdLIrfOoFHWw30dYWQafrvc=
-  /file-system/2.2.2:
-    dependencies:
-      file-match: 1.0.2
-      utils-extend: 1.0.8
-    dev: false
-    resolution:
-      integrity: sha1-fWWDPjojR9zZVqgTxncVPtPt2Yc=
   /finalhandler/1.1.1:
     dependencies:
       debug: 2.6.9
@@ -1403,10 +1382,6 @@ packages:
     dev: false
     resolution:
       integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
-  /utils-extend/1.0.8:
-    dev: false
-    resolution:
-      integrity: sha1-zP17ZFQPjpDuIe7Fd2nQZRyril8=
   /utils-merge/1.0.1:
     dev: false
     engines:
@@ -1490,7 +1465,6 @@ registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
-  ajax-request: ^1.2.3
   body-parser: ^1.15.2
   chai: ^3.5.0
   chai-http: ^3.0.0
