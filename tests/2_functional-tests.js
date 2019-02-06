@@ -23,6 +23,7 @@ suite('Functional Tests', function() {
        chai.request(server)
         .get('/api/stock-prices')
         .query({stock: testStock.stock})
+        .set('X-Forwarded-For', '192.168.2.1')
         .end(function(err, res){
           // console.log(res)
           assert.equal(res.status, 200)
@@ -38,6 +39,7 @@ suite('Functional Tests', function() {
       test('1 stock with like', function(done) {
         chai.request(server)
         .get('/api/stock-prices')
+        .set('X-Forwarded-For', '192.168.2.1')
         .query({stock: testStock.stock})
         .end(function(err, res){
          
@@ -53,6 +55,7 @@ suite('Functional Tests', function() {
       test('1 stock with like again (ensure likes arent double counted)', function(done) {
         chai.request(server)
         .get('/api/stock-prices')
+        .set('X-Forwarded-For', '192.168.2.1')
         .query({stock: testStock.stock})
         .end(function(err, res){
          
@@ -68,6 +71,7 @@ suite('Functional Tests', function() {
       test('2 stocks', function(done) {
         chai.request(server)
         .get('/api/stock-prices')
+        .set('X-Forwarded-For', '192.168.2.1')
         .query({stock: [testStock.stock, 'msft']})
         .end(function(err, res){
          
@@ -83,6 +87,7 @@ suite('Functional Tests', function() {
       test('2 stocks with like', function(done) {
         chai.request(server)
         .get('/api/stock-prices')
+          .set('X-Forwarded-For', '192.168.2.1')
         .query({stock: [testStock.stock, 'msft'], like:true})
         .end(function(err, res){
          
