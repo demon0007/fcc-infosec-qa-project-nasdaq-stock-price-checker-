@@ -27,6 +27,10 @@ module.exports = function (app) {
       
       if (Array.isArray(req.query.stock)) {
         let stockArray = []
+        if (req.query.stock.length > 2) {
+          res.send('Too many stock names in the query')
+          return
+        }
         req.query.stock.forEach(stock => {
           request({
               url: api+stock,
@@ -49,13 +53,18 @@ module.exports = function (app) {
                           console.log(err)
                           res.send('error')
                         } else {
-                          stockArray.push({stock: doc.value.stock, price: doc.value.price, rel})
+                          stockArray.push({stock: doc.value.stock, price: doc.value.price, rel_likes: doc.value.like})
                         }
                       }
                     )
               }
           })
         })
+        let rel_likes = (stockArray[0].rel_likes - stockArray[1].rel_likes)
+        rel_likes = (rel_likes<0)?rel_likes*-1:rel_likes
+        stockArray[0].rel_likes = rel_likes
+        stockArray[1].rel_likes = rel_likes
+        
       } else {
           request({
             url: api+req.query.stock,
