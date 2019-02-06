@@ -22,8 +22,9 @@ module.exports = function (app) {
   app.route('/api/stock-prices')
   
     .get(function (req, res){
-      
-    let stockData = {}
+    
+      console.log(req.ip)
+      let stockData = {}
       
       if (Array.isArray(req.query.stock)) {
         let stockArray = []
@@ -99,7 +100,6 @@ module.exports = function (app) {
             }
         })
       }
-      // res.send('Work in Progress')
     });
     
 };
