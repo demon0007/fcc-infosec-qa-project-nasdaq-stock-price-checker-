@@ -10,7 +10,7 @@
 
 var expect = require('chai').expect;
 var MongoClient = require('mongodb');
-let request = require('ajax-request')
+let request = require('request')
 let api = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&apikey=F3ZMNRM2OERUXPX&symbol='
 let db
 
@@ -18,7 +18,17 @@ const CONNECTION_STRING = process.env.DB;
 MongoClient.connect(CONNECTION_STRING, function(err, dba) { db = dba});
 
 module.exports = function (app) {
+  
+  request({
+        url: api+'msft',
+        json: true
+    }, function (error, response, body) {
 
+        if (!error && response.statusCode === 200) {
+            console.log(body) // Print the json response
+        }
+    })
+  
   app.route('/api/stock-prices')
     .get(function (req, res){
       search('msft', res)
